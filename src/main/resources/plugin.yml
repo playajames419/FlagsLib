@@ -1,0 +1,6 @@
+name: FlagsLib
+version: ${project.version}
+main: me.playajames.flagslib.flagslib.FlagsLib
+api-version: 1.16
+authors: [Playajames]
+description: A library that allows developers to easily attach persistant data to entities and locations.
