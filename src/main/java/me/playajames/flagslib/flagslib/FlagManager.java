@@ -5,20 +5,16 @@ import me.playajames.flagslib.flagslib.flagtypes.LocationFlag;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 
-import javax.annotation.Nullable;
-
 public class FlagManager {
 
     public static boolean hasFlag(Entity entity, String key) {
         FlagsDAO flagsDAO = new FlagsDAO();
-        if (flagsDAO.has(EntityFlag.path + "." + entity.getUniqueId().toString(), key)) return true;
-        return false;
+        return flagsDAO.has(EntityFlag.path + "." + entity.getUniqueId().toString(), key);
     }
 
     public static boolean hasFlag(Location location, String key) {
         FlagsDAO flagsDAO = new FlagsDAO();
-        if (flagsDAO.has(LocationFlag.path + "." + location.serialize().toString(), key)) return true;
-        return false;
+        return flagsDAO.has(LocationFlag.path + "." + location.serialize().toString(), key);
     }
 
     public static void setFlag(Entity entity, String key, String value) {
@@ -53,7 +49,7 @@ public class FlagManager {
         new EntityFlag(entity, key).save();
     }
 
-    public static void setFlag(Location location, String key, @Nullable String value) {
+    public static void setFlag(Location location, String key, String value) {
         if (hasFlag(location, key)) {
             getFlag(location, key).setValue(value);
             return;

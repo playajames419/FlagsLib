@@ -6,8 +6,8 @@ import org.bukkit.Location;
 
 public class LocationFlag extends Flag {
 
-    Location location;
-    public static String path = "locations";
+    final Location location;
+    public static final String path = "locations";
 
     public LocationFlag(Location location, String key, String value) {
         super(key, value);

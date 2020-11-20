@@ -6,8 +6,8 @@ import org.bukkit.entity.Entity;
 
 public class EntityFlag extends Flag {
 
-    Entity entity;
-    public static String path = "entities";
+    final Entity entity;
+    public static final String path = "entities";
 
     public EntityFlag(Entity entity, String key, String value) {
         super(key, value);

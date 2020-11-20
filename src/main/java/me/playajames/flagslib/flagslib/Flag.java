@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 public abstract class Flag {
 
-    String key;
+    final String key;
     String value;
 
     public Flag(String key, @Nullable String value) {

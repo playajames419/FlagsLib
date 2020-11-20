@@ -6,13 +6,12 @@ import java.util.*;
 
 public class FlagsDAO {
 
-    private String fileName = "flags-storage";
-    private String dataFolderPath = FlagsLib.getPlugin(FlagsLib.class).getDataFolder().getPath() + "/";
+    private final String fileName = "flags-storage";
+    private final String dataFolderPath = FlagsLib.getPlugin(FlagsLib.class).getDataFolder().getPath() + "/";
 
     public boolean has(String id, String key) {
         Yaml yaml = new Yaml(fileName, dataFolderPath);
-        if (yaml.contains(id + "." + key)) return true;
-        return false;
+        return yaml.contains(id + "." + key);
     }
 
     public String get(String id, String key) {
