@@ -38,13 +38,4 @@ public class LocationFlag extends Flag {
         return path + "." + location.serialize().toString();
     }
 
-    @Override
-    public void save() {
-        new FlagsDAO().save(getPath(), getKey(), getValueAsString());
-    }
-
-    @Override
-    public void delete() {
-        new FlagsDAO().delete(getPath(), getKey());
-    }
 }

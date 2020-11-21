@@ -6,12 +6,12 @@ public final class FlagsLib extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        this.getLogger().info("Flags Lib has been enabled.");
+        this.getLogger().info("FlagsLib has been enabled.");
     }
 
     @Override
     public void onDisable() {
-        this.getLogger().info("Flags Lib has been disabled.");
+        this.getLogger().info("FlagsLib has been disabled.");
     }
 
 }

@@ -10,11 +10,13 @@ public abstract class Flag {
     public Flag(String key, @Nullable String value) {
         this.key = key;
         this.value = value;
+        save();
     }
 
     public Flag(String key, boolean value) {
         this.key = key;
         this.value = String.valueOf(value);
+        save();
     }
 
     public String getKey() {
@@ -68,8 +70,12 @@ public abstract class Flag {
 
     public abstract String getPath();
 
-    public abstract void save();
+    private void save() {
+        new FlagsDAO().save(getPath(), getKey(), getValueAsString());
+    }
 
-    public abstract void delete();
+    public void delete() {
+        new FlagsDAO().delete(getPath(), getKey());
+    }
 
 }

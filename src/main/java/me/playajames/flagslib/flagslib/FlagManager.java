@@ -22,7 +22,7 @@ public class FlagManager {
             getFlag(entity, key).setValue(value);
             return;
         }
-        new EntityFlag(entity, key, value).save();
+        new EntityFlag(entity, key, value);
     }
 
     public static void setFlag(Entity entity, String key, boolean value) {
@@ -30,7 +30,7 @@ public class FlagManager {
             getFlag(entity, key).setValue(String.valueOf(value));
             return;
         }
-        new EntityFlag(entity, key, value).save();
+        new EntityFlag(entity, key, value);
     }
 
     public static void setFlag(Entity entity, String key, Number value) {
@@ -38,7 +38,7 @@ public class FlagManager {
             getFlag(entity, key).setValue(String.valueOf(value));
             return;
         }
-        new EntityFlag(entity, key, value).save();
+        new EntityFlag(entity, key, value);
     }
 
     public static void setFlag(Entity entity, String key) {
@@ -46,7 +46,7 @@ public class FlagManager {
             getFlag(entity, key).setValue(null);
             return;
         }
-        new EntityFlag(entity, key).save();
+        new EntityFlag(entity, key);
     }
 
     public static void setFlag(Location location, String key, String value) {
@@ -54,7 +54,7 @@ public class FlagManager {
             getFlag(location, key).setValue(value);
             return;
         }
-        new LocationFlag(location, key, value).save();
+        new LocationFlag(location, key, value);
     }
 
     public static void setFlag(Location location, String key, boolean value) {
@@ -62,7 +62,7 @@ public class FlagManager {
             getFlag(location, key).setValue(value);
             return;
         }
-        new LocationFlag(location, key, value).save();
+        new LocationFlag(location, key, value);
     }
 
     public static void setFlag(Location location, String key, Number value) {
@@ -70,7 +70,7 @@ public class FlagManager {
             getFlag(location, key).setValue(String.valueOf(value));
             return;
         }
-        new LocationFlag(location, key, value).save();
+        new LocationFlag(location, key, value);
     }
 
     public static void setFlag(Location location, String key) {
@@ -78,7 +78,7 @@ public class FlagManager {
             getFlag(location, key).setValue(null);
             return;
         }
-        new LocationFlag(location, key).save();
+        new LocationFlag(location, key);
     }
 
     public static EntityFlag getFlag(Entity entity, String key) {

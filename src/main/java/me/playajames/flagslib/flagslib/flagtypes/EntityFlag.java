@@ -38,13 +38,4 @@ public class EntityFlag extends Flag {
         return path + "." + entity.getUniqueId();
     }
 
-    @Override
-    public void save() {
-        new FlagsDAO().save(getPath(), getKey(), getValueAsString());
-    }
-
-    @Override
-    public void delete() {
-        new FlagsDAO().delete(getPath(), getKey());
-    }
 }
