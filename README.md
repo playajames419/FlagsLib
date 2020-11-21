@@ -9,12 +9,12 @@ A minecraft library made for developers that makes it easy to attach persistent 
 ![example-3](https://i.imgur.com/O12xKHR.png)
 
 ## Documentation
-####FlagManager.class
+#### FlagManager.class
 * `setFlag(Player|Location, String, Value)` Set a flag's value on a player or location, flag will be created if not already.
 * `hasFlag(Player|Location, String)` Return's boolean.
 * `getFlag(Player|Location, String)` Return's a flag, null if not found.
 
-####Flag.class
+#### Flag.class
 * `getValueAsString()` Return's value as a string.
 * `getValueAsInt()` Return's value as a int.
 * `getValueAsDouble` Return's value as double.
