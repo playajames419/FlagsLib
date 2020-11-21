@@ -21,6 +21,24 @@ A minecraft library made for developers that makes it easy to attach persistent 
 * `getValueAsFloat` Return's value as float.
 * `delete()` Delete's the flag.
 
+## Maven
+#### Repository
+```
+<repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+</repository>
+```
+
+#### Dependency
+```
+<dependency>
+    <groupId>com.github.playajames419</groupId>
+    <artifactId>FlagsLib</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
+```
+
 ## Release History
 * 1.0-SNAPSHOT - Pre-release, there may be bugs. 
 
