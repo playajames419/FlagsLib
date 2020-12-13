@@ -10,32 +10,27 @@ public class LocationFlag extends Flag {
     public static final String path = "locations";
 
     public LocationFlag(Location location, String key, String value) {
-        super(key, value);
+        super(path + "." + location.serialize().toString(), key, value);
         this.location = location;
     }
 
     public LocationFlag(Location location, String key, boolean value) {
-        super(key, value);
+        super(path + "." + location.serialize().toString(), key, value);
         this.location = location;
     }
 
     public LocationFlag(Location location, String key, Number value) {
-        super(key, String.valueOf(value));
+        super(path + "." + location.serialize().toString(), key, String.valueOf(value));
         this.location = location;
     }
 
     public LocationFlag(Location location, String key) {
-        super(key, null);
+        super(path + "." + location.serialize().toString(), key, null);
         this.location = location;
     }
 
     public Location getLocation() {
         return location;
-    }
-
-    @Override
-    public String getPath() {
-        return path + "." + location.serialize().toString();
     }
 
 }

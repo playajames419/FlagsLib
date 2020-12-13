@@ -1,9 +1,12 @@
 package me.playajames.flagslib.flagslib;
 
+import de.tr7zw.nbtapi.NBTItem;
 import me.playajames.flagslib.flagslib.flagtypes.EntityFlag;
+import me.playajames.flagslib.flagslib.flagtypes.ItemFlag;
 import me.playajames.flagslib.flagslib.flagtypes.LocationFlag;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.inventory.ItemStack;
 
 public class FlagManager {
 
@@ -15,6 +18,11 @@ public class FlagManager {
     public static boolean hasFlag(Location location, String key) {
         FlagsDAO flagsDAO = new FlagsDAO();
         return flagsDAO.has(LocationFlag.path + "." + location.serialize().toString(), key);
+    }
+
+    public static boolean hasFlag(ItemStack item, String key) {
+        NBTItem nbti = new NBTItem(item);
+        return nbti.hasKey(key);
     }
 
     public static void setFlag(Entity entity, String key, String value) {
@@ -81,6 +89,42 @@ public class FlagManager {
         new LocationFlag(location, key);
     }
 
+    public static ItemStack setFlag(ItemStack item, String key, String value) {
+        ItemFlag flag = getFlag(item, key);
+        if (flag != null) {
+            flag.setValue(value);
+            return flag.getItem();
+        }
+        return new ItemFlag(item, key, value).getItem();
+    }
+
+    public static ItemStack setFlag(ItemStack item, String key, boolean value) {
+        ItemFlag flag = getFlag(item, key);
+        if (flag != null) {
+            flag.setValue(value);
+            return flag.getItem();
+        }
+        return new ItemFlag(item, key, value).getItem();
+    }
+
+    public static ItemStack setFlag(ItemStack item, String key, Number value) {
+        ItemFlag flag = getFlag(item, key);
+        if (flag != null) {
+            flag.setValue(String.valueOf(value));
+            return flag.getItem();
+        }
+        return new ItemFlag(item, key, value).getItem();
+    }
+
+    public static ItemStack setFlag(ItemStack item, String key) {
+        ItemFlag flag = getFlag(item, key);
+        if (flag != null) {
+            flag.setValue(null);
+            return flag.getItem();
+        }
+        return new ItemFlag(item, key).getItem();
+    }
+
     public static EntityFlag getFlag(Entity entity, String key) {
         if (!hasFlag(entity, key)) return null;
         FlagsDAO flagsDAO = new FlagsDAO();
@@ -92,6 +136,14 @@ public class FlagManager {
         FlagsDAO flagsDAO = new FlagsDAO();
         return new LocationFlag(location, key, flagsDAO.get(LocationFlag.path + "." + location.serialize().toString(), key));
     }
+
+    public static ItemFlag getFlag(ItemStack item, String key) {
+        if (!hasFlag(item, key)) return null;
+        NBTItem nbti = new NBTItem(item);
+        return new ItemFlag(item, key, nbti.getString(key));
+    }
+
+//    TODO Implement methods to get all flags on an object
 
 //    public static Map<String, EntityFlag> getFlags(Entity entity) {
 //        return null;

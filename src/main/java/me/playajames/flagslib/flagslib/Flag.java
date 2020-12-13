@@ -4,19 +4,26 @@ import javax.annotation.Nullable;
 
 public abstract class Flag {
 
+    final String path;
     final String key;
     String value;
 
-    public Flag(String key, @Nullable String value) {
+    public Flag(String path, String key, @Nullable String value) {
+        this.path = path;
         this.key = key;
         this.value = value;
         save();
     }
 
-    public Flag(String key, boolean value) {
+    public Flag(String path, String key, boolean value) {
+        this.path = path;
         this.key = key;
         this.value = String.valueOf(value);
         save();
+    }
+
+    public String getPath() {
+        return path;
     }
 
     public String getKey() {
@@ -65,17 +72,18 @@ public abstract class Flag {
     }
 
     public boolean getValueAsBoolean() {
-        return Boolean.getBoolean(value);
+        return Boolean.valueOf(value);
     }
 
-    public abstract String getPath();
+    /** getPath() will return null when saving is not required. Example: ItemFlags save using NBT which is already persistent. **/
 
     private void save() {
-        new FlagsDAO().save(getPath(), getKey(), getValueAsString());
+        if (path != null)
+            new FlagsDAO().save(path, getKey(), getValueAsString());
     }
 
     public void delete() {
-        new FlagsDAO().delete(getPath(), getKey());
+        new FlagsDAO().delete(path, getKey());
     }
 
 }
