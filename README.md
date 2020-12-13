@@ -35,7 +35,7 @@ A minecraft library made for developers that makes it easy to attach persistent 
 <dependency>
     <groupId>com.github.playajames419</groupId>
     <artifactId>FlagsLib</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
 </dependency>
 ```
 
