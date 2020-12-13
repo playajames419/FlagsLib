@@ -40,6 +40,7 @@ A minecraft library made for developers that makes it easy to attach persistent 
 ```
 
 ## Release History
+* 1.1-SNAPSHOT - Added ItemStack support. 
 * 1.0-SNAPSHOT - Pre-release, there may be bugs. 
 
 ## License
