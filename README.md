@@ -1,7 +1,7 @@
 ![logo](https://i.imgur.com/ci0RatM.png)
 
 # FlagsLib
-A minecraft library made for developers that makes it easy to attach persistent data to entities and locations.
+A minecraft library made for developers that makes it easy to attach persistent data to entities, locations, and items.
 
 ## Examples
 ![example-1](https://i.imgur.com/BAxBCGD.png)
