@@ -2,88 +2,65 @@ package me.playajames.flagslib.flagslib;
 
 import javax.annotation.Nullable;
 
+import static me.playajames.flagslib.flagslib.FlagsLib.STORAGETYPE;
+
 public abstract class Flag {
 
-    final String path;
+
+    final String id;
+    final FlagType type;
     final String key;
     String value;
 
-    public Flag(String path, String key, @Nullable String value) {
-        this.path = path;
+
+    public Flag(String id, FlagType type, String key, @Nullable String value) {
+        this.id = id;
+        this.type = type;
         this.key = key;
         this.value = value;
         save();
     }
 
-    public Flag(String path, String key, boolean value) {
-        this.path = path;
-        this.key = key;
-        this.value = String.valueOf(value);
-        save();
+
+    /** getId() will return null when saving is not required. Example: ItemFlags save using NBT which is already persistent. **/
+    public String getId() {
+        return id;
     }
 
-    public String getPath() {
-        return path;
-    }
 
     public String getKey() {
         return key;
     }
+
 
     public void setValue(String value) {
         this.value = value;
         save();
     }
 
-    public String getValueAsString() {
-        return value;
+
+    public String getValue() {
+        return this.value;
     }
 
-    public void setValue(int value) {
-        this.value = String.valueOf(value);
-        save();
+    public FlagType getType() {
+        return type;
     }
-
-    public int getValueAsInt() {
-        return Integer.parseInt(value);
-    }
-
-    public void setValue(double value) {
-        this.value = String.valueOf(value);
-        save();
-    }
-
-    public double getValueAsDouble() {
-        return Double.parseDouble(value);
-    }
-
-    public void setValue(float value) {
-        this.value = String.valueOf(value);
-        save();
-    }
-
-    public float getValueAsFloat() {
-        return Float.parseFloat(value);
-    }
-
-    public void setValue(boolean value) {
-        this.value = String.valueOf(value);
-        save();
-    }
-
-    public boolean getValueAsBoolean() {
-        return Boolean.valueOf(value);
-    }
-
-    /** getPath() will return null when saving is not required. Example: ItemFlags save using NBT which is already persistent. **/
 
     private void save() {
-        if (path != null)
-            new FlagsDAO().save(path, getKey(), getValueAsString());
+        if (this.id != null)
+            if (STORAGETYPE.equals(StorageType.File))
+                new FlagsFileDAO().save(this.id, this.type, this.key, this.value);
+            else if (STORAGETYPE.equals(StorageType.MySQL))
+                new FlagsDBDAO().save(this.id, this.key, this.value, this.type);
     }
 
+
     public void delete() {
-        new FlagsDAO().delete(path, getKey());
+        if (STORAGETYPE.equals(StorageType.File))
+            new FlagsFileDAO().delete(this.id, this.key);
+        else if (STORAGETYPE.equals(StorageType.MySQL))
+            new FlagsDBDAO().delete(this.id, this.key);
     }
 
 }

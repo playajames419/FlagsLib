@@ -4,7 +4,7 @@ import de.leonhard.storage.Yaml;
 
 import java.util.*;
 
-public class FlagsDAO {
+public class FlagsFileDAO {
 
     private final String fileName = "flags-storage";
     private final String dataFolderPath = FlagsLib.getPlugin(FlagsLib.class).getDataFolder().getPath() + "/";
@@ -31,7 +31,7 @@ public class FlagsDAO {
         return flagsMap;
     }
 
-    public void save(String id, String key, String value) {
+    public void save(String id, FlagType type, String key, String value) {
         Yaml yaml = new Yaml(fileName, dataFolderPath);
         yaml.set(id + "." + key, value);
     }
@@ -39,7 +39,7 @@ public class FlagsDAO {
     public void save(String id, Map<String, String> flags) {
         if (flags.isEmpty()) return;
         for (Map.Entry<String, String> entry: flags.entrySet())
-            save(id, entry.getKey(), entry.getValue());
+            save(id, null, entry.getKey(), entry.getValue()); // Null type until type is implemented above
     }
 
     public void delete(String id, String key) {

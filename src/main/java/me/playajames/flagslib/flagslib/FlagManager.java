@@ -2,22 +2,50 @@ package me.playajames.flagslib.flagslib;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.playajames.flagslib.flagslib.flagtypes.EntityFlag;
+import me.playajames.flagslib.flagslib.flagtypes.GlobalFlag;
 import me.playajames.flagslib.flagslib.flagtypes.ItemFlag;
 import me.playajames.flagslib.flagslib.flagtypes.LocationFlag;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nullable;
+
+import static me.playajames.flagslib.flagslib.FlagsLib.STORAGETYPE;
+
 public class FlagManager {
 
+    public static boolean hasGlobalFlag(String key) {
+        if (STORAGETYPE.equals(StorageType.File)) {
+            FlagsFileDAO flagsFileDAO = new FlagsFileDAO();
+            return flagsFileDAO.has("global", key);
+        } else if (STORAGETYPE.equals(StorageType.MySQL)) {
+            FlagsDBDAO flagsDBDAO = new FlagsDBDAO();
+            return flagsDBDAO.has("global", key);
+        }
+        return false;
+    }
+
     public static boolean hasFlag(Entity entity, String key) {
-        FlagsDAO flagsDAO = new FlagsDAO();
-        return flagsDAO.has(EntityFlag.path + "." + entity.getUniqueId().toString(), key);
+        if (STORAGETYPE.equals(StorageType.File)) {
+            FlagsFileDAO flagsFileDAO = new FlagsFileDAO();
+            return flagsFileDAO.has(entity.getUniqueId().toString(), key);
+        } else if (STORAGETYPE.equals(StorageType.MySQL)) {
+            FlagsDBDAO flagsDBDAO = new FlagsDBDAO();
+            return flagsDBDAO.has(entity.getUniqueId().toString(), key);
+        }
+        return false;
     }
 
     public static boolean hasFlag(Location location, String key) {
-        FlagsDAO flagsDAO = new FlagsDAO();
-        return flagsDAO.has(LocationFlag.path + "." + location.serialize().toString(), key);
+        if (STORAGETYPE.equals(StorageType.File)) {
+            FlagsFileDAO flagsFileDAO = new FlagsFileDAO();
+            return flagsFileDAO.has(location.serialize().toString(), key);
+        } else if (STORAGETYPE.equals(StorageType.MySQL)) {
+            FlagsDBDAO flagsDBDAO = new FlagsDBDAO();
+            return flagsDBDAO.has(location.serialize().toString(), key);
+        }
+        return false;
     }
 
     public static boolean hasFlag(ItemStack item, String key) {
@@ -25,7 +53,15 @@ public class FlagManager {
         return nbti.hasKey(key);
     }
 
-    public static void setFlag(Entity entity, String key, String value) {
+    public static void setGlobalFlag(String key, @Nullable String value) {
+        if (hasGlobalFlag(key)) {
+            getGlobalFlag(key).setValue(value);
+            return;
+        }
+        new GlobalFlag(key, value);
+    }
+
+    public static void setFlag(Entity entity, String key, @Nullable String value) {
         if (hasFlag(entity, key)) {
             getFlag(entity, key).setValue(value);
             return;
@@ -33,31 +69,7 @@ public class FlagManager {
         new EntityFlag(entity, key, value);
     }
 
-    public static void setFlag(Entity entity, String key, boolean value) {
-        if (hasFlag(entity, key)) {
-            getFlag(entity, key).setValue(String.valueOf(value));
-            return;
-        }
-        new EntityFlag(entity, key, value);
-    }
-
-    public static void setFlag(Entity entity, String key, Number value) {
-        if (hasFlag(entity, key)) {
-            getFlag(entity, key).setValue(String.valueOf(value));
-            return;
-        }
-        new EntityFlag(entity, key, value);
-    }
-
-    public static void setFlag(Entity entity, String key) {
-        if (hasFlag(entity, key)) {
-            getFlag(entity, key).setValue(null);
-            return;
-        }
-        new EntityFlag(entity, key);
-    }
-
-    public static void setFlag(Location location, String key, String value) {
+    public static void setFlag(Location location, String key, @Nullable String value) {
         if (hasFlag(location, key)) {
             getFlag(location, key).setValue(value);
             return;
@@ -65,31 +77,7 @@ public class FlagManager {
         new LocationFlag(location, key, value);
     }
 
-    public static void setFlag(Location location, String key, boolean value) {
-        if (hasFlag(location, key)) {
-            getFlag(location, key).setValue(value);
-            return;
-        }
-        new LocationFlag(location, key, value);
-    }
-
-    public static void setFlag(Location location, String key, Number value) {
-        if (hasFlag(location, key)) {
-            getFlag(location, key).setValue(String.valueOf(value));
-            return;
-        }
-        new LocationFlag(location, key, value);
-    }
-
-    public static void setFlag(Location location, String key) {
-        if (hasFlag(location, key)) {
-            getFlag(location, key).setValue(null);
-            return;
-        }
-        new LocationFlag(location, key);
-    }
-
-    public static ItemStack setFlag(ItemStack item, String key, String value) {
+    public static ItemStack setFlag(ItemStack item, String key, @Nullable String value) {
         ItemFlag flag = getFlag(item, key);
         if (flag != null) {
             flag.setValue(value);
@@ -98,43 +86,40 @@ public class FlagManager {
         return new ItemFlag(item, key, value).getItem();
     }
 
-    public static ItemStack setFlag(ItemStack item, String key, boolean value) {
-        ItemFlag flag = getFlag(item, key);
-        if (flag != null) {
-            flag.setValue(value);
-            return flag.getItem();
+    public static GlobalFlag getGlobalFlag(String key) {
+        if (!hasGlobalFlag(key)) return null;
+        if (STORAGETYPE.equals(StorageType.File)) {
+            FlagsFileDAO flagsFileDAO = new FlagsFileDAO();
+            return new GlobalFlag(key, flagsFileDAO.get("global", key));
+        } else if (STORAGETYPE.equals(StorageType.MySQL)) {
+            FlagsDBDAO flagsDBDAO = new FlagsDBDAO();
+            return new GlobalFlag(key, flagsDBDAO.get("global", key));
         }
-        return new ItemFlag(item, key, value).getItem();
-    }
-
-    public static ItemStack setFlag(ItemStack item, String key, Number value) {
-        ItemFlag flag = getFlag(item, key);
-        if (flag != null) {
-            flag.setValue(String.valueOf(value));
-            return flag.getItem();
-        }
-        return new ItemFlag(item, key, value).getItem();
-    }
-
-    public static ItemStack setFlag(ItemStack item, String key) {
-        ItemFlag flag = getFlag(item, key);
-        if (flag != null) {
-            flag.setValue(null);
-            return flag.getItem();
-        }
-        return new ItemFlag(item, key).getItem();
+        return null;
     }
 
     public static EntityFlag getFlag(Entity entity, String key) {
         if (!hasFlag(entity, key)) return null;
-        FlagsDAO flagsDAO = new FlagsDAO();
-        return new EntityFlag(entity, key, flagsDAO.get(EntityFlag.path + "." + entity.getUniqueId().toString(), key));
+        if (STORAGETYPE.equals(StorageType.File)) {
+            FlagsFileDAO flagsFileDAO = new FlagsFileDAO();
+            return new EntityFlag(entity, key, flagsFileDAO.get(entity.getUniqueId().toString(), key));
+        } else if (STORAGETYPE.equals(StorageType.MySQL)) {
+            FlagsDBDAO flagsDBDAO = new FlagsDBDAO();
+            return new EntityFlag(entity, key, flagsDBDAO.get(entity.getUniqueId().toString(), key));
+        }
+        return null;
     }
 
     public static LocationFlag getFlag(Location location, String key) {
         if (!hasFlag(location, key)) return null;
-        FlagsDAO flagsDAO = new FlagsDAO();
-        return new LocationFlag(location, key, flagsDAO.get(LocationFlag.path + "." + location.serialize().toString(), key));
+        if (STORAGETYPE.equals(StorageType.File)) {
+            FlagsFileDAO flagsFileDAO = new FlagsFileDAO();
+            return new LocationFlag(location, key, flagsFileDAO.get(location.serialize().toString(), key));
+        } else if (STORAGETYPE.equals(StorageType.MySQL)) {
+            FlagsDBDAO flagsDBDAO = new FlagsDBDAO();
+            return new LocationFlag(location, key, flagsDBDAO.get(location.serialize().toString(), key));
+        }
+        return null;
     }
 
     public static ItemFlag getFlag(ItemStack item, String key) {
@@ -143,7 +128,7 @@ public class FlagManager {
         return new ItemFlag(item, key, nbti.getString(key));
     }
 
-//    TODO Implement methods to get all flags on an object
+//    TODO Implement methods to get all flags on an object, and get all flags of a type
 
 //    public static Map<String, EntityFlag> getFlags(Entity entity) {
 //        return null;
