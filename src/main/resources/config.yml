@@ -1,0 +1,2 @@
+# Storage type may be file or mysql
+storage-type: file
