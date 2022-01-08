@@ -97,5 +97,12 @@
             <artifactId>item-nbt-api-plugin</artifactId>
             <version>2.6.0</version>
         </dependency>
+        <dependency>
+            <groupId>me.playajames</groupId>
+            <artifactId>easydatabaseconnector</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>C:\Users\kenne\IdeaProjects\EasyDatabaseConnector\target\easydatabaseconnector-1.0-SNAPSHOT.jar</systemPath>
+        </dependency>
     </dependencies>
 </project>
