@@ -6,7 +6,7 @@
 
     <groupId>me.playajames.flags-lib</groupId>
     <artifactId>flags-lib</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Flags Lib</name>
@@ -97,12 +97,13 @@
             <artifactId>item-nbt-api-plugin</artifactId>
             <version>2.6.0</version>
         </dependency>
-        <dependency>
-            <groupId>me.playajames</groupId>
-            <artifactId>easydatabaseconnector</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>C:\Users\kenne\IdeaProjects\EasyDatabaseConnector\target\easydatabaseconnector-1.0-SNAPSHOT.jar</systemPath>
-        </dependency>
+<!--        Uncomment to use-->
+<!--        <dependency>-->
+<!--            <groupId>me.playajames</groupId>-->
+<!--            <artifactId>easydatabaseconnector</artifactId>-->
+<!--            <version>1.0-SNAPSHOT</version>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>C:\Users\kenne\IdeaProjects\EasyDatabaseConnector\target\easydatabaseconnector-1.0-SNAPSHOT.jar</systemPath>-->
+<!--        </dependency>-->
     </dependencies>
 </project>
