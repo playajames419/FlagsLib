@@ -2,12 +2,14 @@ package me.playajames.flagslib.flagslib;
 
 import me.playajames.easydatabaseconnector.HikariCPFactory;
 import me.playajames.easydatabaseconnector.jooq.DSLContext;
+import me.playajames.easydatabaseconnector.jooq.Result;
 import me.playajames.easydatabaseconnector.jooq.SQLDialect;
 import me.playajames.easydatabaseconnector.jooq.impl.DSL;
 import me.playajames.easydatabaseconnector.jooq.tables.Flags;
 import me.playajames.easydatabaseconnector.jooq.tables.records.FlagsRecord;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,64 +24,89 @@ public class FlagsDBDAO {
                         .and(Flags.FLAGS.NAME.eq(name)));
     }
 
-    public String get(String identifier, String name) {
+
+    public boolean has(int id) {
+        DSLContext context = DSL.using(HikariCPFactory.getDataSource(), SQLDialect.MYSQL);
+        return context.fetchExists(
+                context
+                        .selectFrom(Flags.FLAGS)
+                        .where(Flags.FLAGS.ID.eq(id)));
+    }
+
+
+    public FlagsRecord getOne(String identifier, String key) {
         DSLContext context = DSL.using(HikariCPFactory.getDataSource(), SQLDialect.MYSQL);
         FlagsRecord record = context
                 .selectFrom(Flags.FLAGS)
                 .where(Flags.FLAGS.IDENTIFIER.eq(identifier))
-                .and(Flags.FLAGS.NAME.eq(name))
+                .and(Flags.FLAGS.NAME.eq(key))
                 .fetchOne();
-        return record.getValue();
+        return record;
     }
 
-    public Map<String, String> get(String identifier, Set<String> names) {
-        if (names.isEmpty()) return null;
-        Map<String, String> flagsMap = new HashMap<>();
-        for (String name : names) {
-            if (!has(identifier, name)) continue;
-            flagsMap.put(name, get(identifier, name));
+
+    public Map<String, FlagsRecord> getMany(String identifier, Set<String> keys) {
+        Map<String, FlagsRecord> flagsMap = new HashMap<>();
+        if (keys.isEmpty()) return flagsMap;
+        for (String key : keys) {
+            if (!has(identifier, key)) continue;
+            flagsMap.put(key, getOne(identifier, key));
         }
         if(flagsMap.isEmpty()) return null;
         return flagsMap;
     }
 
-    public void save(String identifier, String name, String value, FlagType type) {
-        if (has(identifier, name))
-            update(identifier, name, value, type.name());
-        else
-            insert(identifier, name, value, type.name());
+
+    public Result<FlagsRecord> getByType(FlagType type) {
+        DSLContext context = DSL.using(HikariCPFactory.getDataSource(), SQLDialect.MYSQL);
+        return context
+                .selectFrom(Flags.FLAGS)
+                .where(Flags.FLAGS.TYPE.eq(type.name()))
+                .fetch();
     }
 
-    public void delete(String identifier, String name) {
-        if (has(identifier, name)) {
+
+    public List<Flag> getByTypeWithKey(FlagType type, String key) {
+        DSLContext context = DSL.using(HikariCPFactory.getDataSource(), SQLDialect.MYSQL);
+        return context
+                .selectFrom(Flags.FLAGS)
+                .where(Flags.FLAGS.TYPE.eq(type.name()))
+                .and(Flags.FLAGS.NAME.eq(key))
+                .fetchInto(Flag.class);
+    }
+
+
+    public void delete(int id) {
+        if (has(id)) {
             DSLContext context = DSL.using(HikariCPFactory.getDataSource(), SQLDialect.MYSQL);
             context
                     .delete(Flags.FLAGS)
-                    .where(Flags.FLAGS.IDENTIFIER.eq(identifier))
-                    .and(Flags.FLAGS.NAME.eq(name))
+                    .where(Flags.FLAGS.ID.eq(id))
                     .execute();
         }
     }
 
-    public void delete(String identifier, Set<String> flags) {
+
+    public void delete(int id, Set<String> flags) {
         if (flags.isEmpty()) return;
         for (String name : flags) {
-            if (!has(identifier, name)) continue;
-            delete(identifier, name);
+            if (!has(id)) continue;
+            delete(id);
         }
     }
 
-    private void update(String identifier, String name, String value, String type) {
+
+    public void update(int id, String value) {
         DSLContext context = DSL.using(HikariCPFactory.getDataSource(), SQLDialect.MYSQL);
         context
                 .update(Flags.FLAGS)
                 .set(Flags.FLAGS.VALUE, value)
-                .where(Flags.FLAGS.IDENTIFIER.eq(identifier))
-                .and(Flags.FLAGS.NAME.eq(name))
+                .where(Flags.FLAGS.ID.eq(id))
                 .execute();
     }
 
-    private void insert(String identifier, String name, String value, String type) {
+
+    public void insert(String identifier, String name, String value, String type) {
         DSLContext context = DSL.using(HikariCPFactory.getDataSource(), SQLDialect.MYSQL);
         context
                 .insertInto(Flags.FLAGS)

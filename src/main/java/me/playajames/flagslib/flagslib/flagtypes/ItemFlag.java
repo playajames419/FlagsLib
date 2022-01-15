@@ -11,14 +11,14 @@ public class ItemFlag extends Flag {
 
 
     public ItemFlag(ItemStack item, String key, String value) {
-        super(null, FlagType.Item, key, value);
+        super(null, key, value, FlagType.Item);
         this.nbti = new NBTItem(item);
         nbti.setString(key, value);
     }
 
 
     public ItemFlag(ItemStack item, String key) {
-        super(null, FlagType.Item, key, null);
+        super(null, key, null, FlagType.Item);
         this.nbti = new NBTItem(item);
         nbti.setString(key, null);
     }
@@ -30,8 +30,8 @@ public class ItemFlag extends Flag {
 
 
     @Override
-    public void setValue(String value) {
-        super.setValue(value);
+    public void setValue(String value, boolean updateDatabase) {
+        super.setValue(value, false);
         nbti.setString(getKey(), value);
     }
 

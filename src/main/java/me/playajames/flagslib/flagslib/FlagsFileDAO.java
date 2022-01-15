@@ -6,6 +6,8 @@ import java.util.*;
 
 public class FlagsFileDAO {
 
+    //todo probably broken need to test and fix added updated and created fields to flag and should keep track of flag type
+
     private final String fileName = "flags-storage";
     private final String dataFolderPath = FlagsLib.getPlugin(FlagsLib.class).getDataFolder().getPath() + "/";
 
@@ -31,28 +33,28 @@ public class FlagsFileDAO {
         return flagsMap;
     }
 
-    public void save(String id, FlagType type, String key, String value) {
+    public void save(String identifier, String key, String value, FlagType type) {
         Yaml yaml = new Yaml(fileName, dataFolderPath);
-        yaml.set(id + "." + key, value);
+        yaml.set(identifier + "." + key,  value);
     }
 
-    public void save(String id, Map<String, String> flags) {
+    public void save(String identifier, Map<String, String> flags) {
         if (flags.isEmpty()) return;
         for (Map.Entry<String, String> entry: flags.entrySet())
-            save(id, null, entry.getKey(), entry.getValue()); // Null type until type is implemented above
+            save(identifier, entry.getKey(), entry.getValue(), null); // Null type until type is implemented above
     }
 
-    public void delete(String id, String key) {
-        if (!has(id, key)) return;
+    public void delete(String identifier, String key) {
+        if (!has(identifier, key)) return;
         Yaml yaml = new Yaml(fileName, dataFolderPath);
-        yaml.remove(id + "." + key);
+        yaml.remove(identifier + "." + key);
     }
 
-    public void delete(String id, Set<String> flags) {
+    public void delete(String identifier, Set<String> flags) {
         if (flags.isEmpty()) return;
         for (String key : flags) {
-            if (!has(id, key)) continue;
-            delete(id, key);
+            if (!has(identifier, key)) continue;
+            delete(identifier, key);
         }
     }
 

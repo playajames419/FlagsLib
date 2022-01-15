@@ -1,41 +1,62 @@
 package me.playajames.flagslib.flagslib;
 
+import me.playajames.easydatabaseconnector.jooq.tables.records.FlagsRecord;
+
 import javax.annotation.Nullable;
+
+import java.time.LocalDateTime;
 
 import static me.playajames.flagslib.flagslib.FlagsLib.STORAGETYPE;
 
-public abstract class Flag {
+public class Flag {
 
-
-    final String id;
-    final FlagType type;
-    final String key;
+    int id;
+    final String identifier;
+    final String name;
     String value;
+    final FlagType type;
+    LocalDateTime updated;
+    LocalDateTime created;
 
 
-    public Flag(String id, FlagType type, String key, @Nullable String value) {
-        this.id = id;
-        this.type = type;
-        this.key = key;
+    public Flag(String identifier, String key, @Nullable String value, FlagType type) {
+        this.id = -1;
+        this.identifier = identifier;
+        this.name = key;
         this.value = value;
-        save();
+        this.type = type;
+        this.updated = null; //todo implement this for file storage
+        this.created = null; //todo implement this for file storage
     }
 
+    public Flag(int id, String identifier, String key, @Nullable String value, FlagType type, LocalDateTime updated, LocalDateTime created) {
+        this.id = id;
+        this.identifier = identifier;
+        this.name = key;
+        this.value = value;
+        this.type = type;
+        this.updated = updated;
+        this.created = created;
+    }
 
-    /** getId() will return null when saving is not required. Example: ItemFlags save using NBT which is already persistent. **/
-    public String getId() {
+    public int getId() {
         return id;
+    }
+
+    public String getIdentifier() {
+        return identifier;
     }
 
 
     public String getKey() {
-        return key;
+        return name;
     }
 
 
-    public void setValue(String value) {
+    public void setValue(String value, boolean updateDatabase) {
         this.value = value;
-        save();
+        if (updateDatabase)
+            save();
     }
 
 
@@ -47,20 +68,39 @@ public abstract class Flag {
         return type;
     }
 
-    private void save() {
-        if (this.id != null)
-            if (STORAGETYPE.equals(StorageType.File))
-                new FlagsFileDAO().save(this.id, this.type, this.key, this.value);
-            else if (STORAGETYPE.equals(StorageType.MySQL))
-                new FlagsDBDAO().save(this.id, this.key, this.value, this.type);
+    public LocalDateTime getUpdated() {
+        return updated;
+    }
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public void save() {
+        if (STORAGETYPE.equals(StorageType.File))
+            new FlagsFileDAO().save(this.identifier, this.name, this.value, this.type);
+        else if (STORAGETYPE.equals(StorageType.MySQL)) {
+            if (this.id == -1) {
+                new FlagsDBDAO().insert(this.identifier, this.name, this.value, this.type.name());
+                updateWithDatabaseFields();
+            } else
+                new FlagsDBDAO().update(this.id, this.value);
+        }
     }
 
 
     public void delete() {
         if (STORAGETYPE.equals(StorageType.File))
-            new FlagsFileDAO().delete(this.id, this.key);
+            new FlagsFileDAO().delete(this.identifier, this.name);
         else if (STORAGETYPE.equals(StorageType.MySQL))
-            new FlagsDBDAO().delete(this.id, this.key);
+            new FlagsDBDAO().delete(this.id);
+    }
+
+    private void updateWithDatabaseFields() {
+        FlagsRecord record = new FlagsDBDAO().getOne(this.identifier, this.getKey());
+        this.id = record.getId();
+        this.updated = record.getUpdated();
+        this.created = record.getCreated();
     }
 
 }

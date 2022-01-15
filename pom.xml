@@ -14,7 +14,7 @@
     <description>A minecraft library that makes it easy to attach persistent data to entities and locations.
     </description>
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -32,7 +32,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.3.0-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -63,6 +63,13 @@
             </resource>
         </resources>
     </build>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>maven-snapshots</id>
+            <url>https://repository.apache.org/content/repositories/snapshots/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <repositories>
         <repository>
@@ -97,13 +104,19 @@
             <artifactId>item-nbt-api-plugin</artifactId>
             <version>2.6.0</version>
         </dependency>
-<!--        Uncomment to use-->
-<!--        <dependency>-->
-<!--            <groupId>me.playajames</groupId>-->
-<!--            <artifactId>easydatabaseconnector</artifactId>-->
-<!--            <version>1.0-SNAPSHOT</version>-->
-<!--            <scope>system</scope>-->
-<!--            <systemPath>C:\Users\kenne\IdeaProjects\EasyDatabaseConnector\target\easydatabaseconnector-1.0-SNAPSHOT.jar</systemPath>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>me.playajames</groupId>
+            <artifactId>easydatabaseconnector</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>C:\Users\James Kennedy\Dropbox\James\Workspace\EasyDatabaseConnector\target\easydatabaseconnector-1.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>me.playajames</groupId>
+            <artifactId>tdsutils</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>C:\Users\James Kennedy\Dropbox\James\Workspace\TDSUtils\target\tdsutils-1.0-SNAPSHOT.jar</systemPath>
+        </dependency>
     </dependencies>
 </project>

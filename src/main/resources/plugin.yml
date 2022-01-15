@@ -3,5 +3,5 @@ version: ${project.version}
 main: me.playajames.flagslib.flagslib.FlagsLib
 api-version: 1.18
 authors: [ Playajames ]
-description: A library that allows developers to easily attach persistant data to minecraft objects.
-depend: [ EasyDatabaseConnector ]
+description: A library that allows developers to easily attach persistent data to minecraft objects.
+depend: [ EasyDatabaseConnector, TDSUtils ]
