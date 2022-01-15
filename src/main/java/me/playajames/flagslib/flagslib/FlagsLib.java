@@ -3,6 +3,8 @@ package me.playajames.flagslib.flagslib;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Objects;
+
 public final class FlagsLib extends JavaPlugin {
 
     public static StorageType STORAGETYPE = StorageType.File;
@@ -22,8 +24,8 @@ public final class FlagsLib extends JavaPlugin {
 
     private void setConfigSettings() {
         FileConfiguration config = getConfig();
-        if (config.getString("storage-type").equalsIgnoreCase("mysql"))
-            this.STORAGETYPE = StorageType.MySQL;
+        if (Objects.requireNonNull(config.getString("storage-type")).equalsIgnoreCase("mysql"))
+            STORAGETYPE = StorageType.MySQL;
     }
 
     // TODO Not a very thorough test, should be fixed before implemented
