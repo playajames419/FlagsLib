@@ -103,4 +103,22 @@ public class Flag {
         this.created = record.getCreated();
     }
 
+    @Override
+    public String toString() {
+        return
+                this.id
+                + ", "
+                + this.identifier
+                + ", "
+                + this.name
+                + ", "
+                + this.value
+                + ", "
+                + this.type.name()
+                + ", "
+                + this.updated.toString()
+                + ", "
+                + this.created.toString();
+    }
+
 }
