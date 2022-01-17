@@ -95,6 +95,14 @@ public class FlagsDBDAO {
                 .fetch();
     }
 
+    public Result<FlagsRecord> getAllByIdentifier(String identifier) {
+        DSLContext context = DSL.using(HikariCPFactory.getDataSource(), SQLDialect.MYSQL);
+        return context
+                .selectFrom(Flags.FLAGS)
+                .where(Flags.FLAGS.IDENTIFIER.eq(identifier))
+                .fetch();
+    }
+
 
     public void delete(int id) {
         if (has(id)) {

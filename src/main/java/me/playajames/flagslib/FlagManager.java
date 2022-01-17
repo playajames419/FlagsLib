@@ -166,37 +166,53 @@ public class FlagManager {
         return new ItemFlag(item, key, nbti.getString(key));
     }
 
-    public static List<Flag> getAllFlagsByType(FlagType type) throws Exception { //todo file storage fetch
-        if (STORAGETYPE.equals(StorageType.File)) throw new Exception("Feature not implemented yet for file storage");
+    public static List<Flag> getAllFlagsByType(FlagType type) { //todo file storage fetch
+        if (STORAGETYPE.equals(StorageType.File)) try {
+            throw new Exception("Feature not implemented yet for file storage");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        if (STORAGETYPE.equals(StorageType.MySQL)) {
+        else if (STORAGETYPE.equals(StorageType.MySQL)) {
             return new FlagMapper().mapMany(new FlagsDBDAO().getAllByType(type));
         }
         return null;
     }
 
-    public static List<Flag> getAllFlagsByTypeWithKey(FlagType type, String key) throws Exception { //todo file storage fetch
-        if (STORAGETYPE.equals(StorageType.File)) throw new Exception("Feature not implemented yet for file storage");
+    public static List<Flag> getAllFlagsByTypeWithKey(FlagType type, String key) { //todo file storage fetch
+        if (STORAGETYPE.equals(StorageType.File)) try {
+            throw new Exception("Feature not implemented yet for file storage");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        if (STORAGETYPE.equals(StorageType.MySQL)) {
+        else if (STORAGETYPE.equals(StorageType.MySQL)) {
             return new FlagMapper().mapMany(new FlagsDBDAO().getAllByTypeWithKey(type, key));
         }
         return null;
     }
 
-    public static List<Flag> getAllFlagsByTypeWithValue(FlagType type, String value) throws Exception { //todo file storage fetch
-        if (STORAGETYPE.equals(StorageType.File)) throw new Exception("Feature not implemented yet for file storage");
+    public static List<Flag> getAllFlagsByTypeWithValue(FlagType type, String value) { //todo file storage fetch
+        if (STORAGETYPE.equals(StorageType.File)) try {
+            throw new Exception("Feature not implemented yet for file storage");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        if (STORAGETYPE.equals(StorageType.MySQL)) {
+        else if (STORAGETYPE.equals(StorageType.MySQL)) {
             return new FlagMapper().mapMany(new FlagsDBDAO().getAllByTypeWithValue(type, value));
         }
         return null;
     }
 
-    public static List<Flag> getAllFlagsByTypeWithKeyAndValue(FlagType type, String key, String value) throws Exception { //todo file storage fetch
-        if (STORAGETYPE.equals(StorageType.File)) throw new Exception("Feature not implemented yet for file storage");
+    public static List<Flag> getAllFlagsByTypeWithKeyAndValue(FlagType type, String key, String value) { //todo file storage fetch
+        if (STORAGETYPE.equals(StorageType.File)) try {
+            throw new Exception("Feature not implemented yet for file storage");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        if (STORAGETYPE.equals(StorageType.MySQL)) {
+        else if (STORAGETYPE.equals(StorageType.MySQL)) {
             return new FlagMapper().mapMany(new FlagsDBDAO().getAllByTypeWithKeyAndValue(type, key, value));
         }
         return null;
@@ -204,12 +220,60 @@ public class FlagManager {
 
 //    TODO Implement methods to get all flags on an object, and get all flags of an object
 
-//    public static Map<String, EntityFlag> getAllFlags(Entity entity) {
-//        return null;
-//    }
-//
-//    public static Map<String, LocationFlag> getAllFlags(Location location) {
-//        return null;
-//    }
+    public static List<EntityFlag> getAllFlags(Entity entity) {
+        if (STORAGETYPE.equals(StorageType.File)) try {
+            throw new Exception("Feature not implemented yet for file storage");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        else if (STORAGETYPE.equals(StorageType.MySQL)) {
+            return new FlagMapper().mapManyEntity(new FlagsDBDAO().getAllByIdentifier(entity.getUniqueId().toString()));
+        }
+
+        return null;
+    }
+
+    public static List<LocationFlag> getAllFlags(Location location) {
+        if (STORAGETYPE.equals(StorageType.File)) try {
+            throw new Exception("Feature not implemented yet for file storage");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        else if (STORAGETYPE.equals(StorageType.MySQL)) {
+            return new FlagMapper().mapManyLocation(new FlagsDBDAO().getAllByIdentifier(Locations.serialize(location, true, false)));
+        }
+
+        return null;
+    }
+
+    public static List<ChunkFlag> getAllFlags(Chunk chunk) {
+        if (STORAGETYPE.equals(StorageType.File)) try {
+            throw new Exception("Feature not implemented yet for file storage");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        else if (STORAGETYPE.equals(StorageType.MySQL)) {
+            return new FlagMapper().mapManyChunk(new FlagsDBDAO().getAllByIdentifier(IdentifierGenerator.generate(chunk)));
+        }
+
+        return null;
+    }
+
+    public static List<GlobalFlag> getAllGlobalFlags() {
+        if (STORAGETYPE.equals(StorageType.File)) try {
+            throw new Exception("Feature not implemented yet for file storage");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        else if (STORAGETYPE.equals(StorageType.MySQL)) {
+            return new FlagMapper().mapManyGlobal(new FlagsDBDAO().getAllByIdentifier("global"));
+        }
+
+        return null;
+    }
 
 }
