@@ -1,14 +1,12 @@
-package me.playajames.flagslib.flagslib.flagtypes;
+package me.playajames.flagslib.flagtypes;
 
-import me.playajames.flagslib.flagslib.Flag;
-import me.playajames.flagslib.flagslib.FlagType;
+import me.playajames.flagslib.FlagType;
+import me.playajames.flagslib.Flag;
 import me.playajames.tdsutils.spigot.world.Locations;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import javax.annotation.Nullable;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 public class LocationFlag extends Flag {
 

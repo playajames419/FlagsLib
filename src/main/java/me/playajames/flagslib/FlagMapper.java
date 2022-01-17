@@ -1,4 +1,4 @@
-package me.playajames.flagslib.flagslib;
+package me.playajames.flagslib;
 
 import me.playajames.easydatabaseconnector.jooq.Result;
 import me.playajames.easydatabaseconnector.jooq.tables.records.FlagsRecord;

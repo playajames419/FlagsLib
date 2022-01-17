@@ -1,4 +1,4 @@
-package me.playajames.flagslib.flagslib;
+package me.playajames.flagslib;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;

@@ -1,4 +1,4 @@
-package me.playajames.flagslib.flagslib;
+package me.playajames.flagslib;
 
 import me.playajames.easydatabaseconnector.HikariCPFactory;
 import me.playajames.easydatabaseconnector.jooq.DSLContext;
@@ -9,7 +9,6 @@ import me.playajames.easydatabaseconnector.jooq.tables.Flags;
 import me.playajames.easydatabaseconnector.jooq.tables.records.FlagsRecord;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
