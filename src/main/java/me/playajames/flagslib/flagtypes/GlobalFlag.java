@@ -1,7 +1,7 @@
-package me.playajames.flagslib.flagslib.flagtypes;
+package me.playajames.flagslib.flagtypes;
 
-import me.playajames.flagslib.flagslib.Flag;
-import me.playajames.flagslib.flagslib.FlagType;
+import me.playajames.flagslib.Flag;
+import me.playajames.flagslib.FlagType;
 
 import javax.annotation.Nullable;
 import java.time.LocalDateTime;

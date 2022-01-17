@@ -1,4 +1,4 @@
-package me.playajames.flagslib.flagslib;
+package me.playajames.flagslib;
 
 import me.playajames.easydatabaseconnector.HikariCPFactory;
 import me.playajames.easydatabaseconnector.jooq.DSLContext;
@@ -9,7 +9,6 @@ import me.playajames.easydatabaseconnector.jooq.tables.Flags;
 import me.playajames.easydatabaseconnector.jooq.tables.records.FlagsRecord;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -57,7 +56,7 @@ public class FlagsDBDAO {
     }
 
 
-    public Result<FlagsRecord> getByType(FlagType type) {
+    public Result<FlagsRecord> getAllByType(FlagType type) {
         DSLContext context = DSL.using(HikariCPFactory.getDataSource(), SQLDialect.MYSQL);
         return context
                 .selectFrom(Flags.FLAGS)
@@ -66,13 +65,34 @@ public class FlagsDBDAO {
     }
 
 
-    public List<Flag> getByTypeWithKey(FlagType type, String key) {
+    public Result<FlagsRecord> getAllByTypeWithKey(FlagType type, String key) {
         DSLContext context = DSL.using(HikariCPFactory.getDataSource(), SQLDialect.MYSQL);
         return context
                 .selectFrom(Flags.FLAGS)
                 .where(Flags.FLAGS.TYPE.eq(type.name()))
                 .and(Flags.FLAGS.NAME.eq(key))
-                .fetchInto(Flag.class);
+                .fetch();
+    }
+
+
+    public Result<FlagsRecord> getAllByTypeWithValue(FlagType type, String value) {
+        DSLContext context = DSL.using(HikariCPFactory.getDataSource(), SQLDialect.MYSQL);
+        return context
+                .selectFrom(Flags.FLAGS)
+                .where(Flags.FLAGS.TYPE.eq(type.name()))
+                .and(Flags.FLAGS.VALUE.eq(value))
+                .fetch();
+    }
+
+
+    public Result<FlagsRecord> getAllByTypeWithKeyAndValue(FlagType type, String key, String value) {
+        DSLContext context = DSL.using(HikariCPFactory.getDataSource(), SQLDialect.MYSQL);
+        return context
+                .selectFrom(Flags.FLAGS)
+                .where(Flags.FLAGS.TYPE.eq(type.name()))
+                .and(Flags.FLAGS.NAME.eq(key))
+                .and(Flags.FLAGS.VALUE.eq(value))
+                .fetch();
     }
 
 

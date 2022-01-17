@@ -1,10 +1,11 @@
-package me.playajames.flagslib.flagslib;
+package me.playajames.flagslib;
 
 import de.tr7zw.nbtapi.NBTItem;
-import me.playajames.flagslib.flagslib.flagtypes.EntityFlag;
-import me.playajames.flagslib.flagslib.flagtypes.GlobalFlag;
-import me.playajames.flagslib.flagslib.flagtypes.ItemFlag;
-import me.playajames.flagslib.flagslib.flagtypes.LocationFlag;
+import me.playajames.easydatabaseconnector.jooq.tables.records.FlagsRecord;
+import me.playajames.flagslib.flagtypes.*;
+import me.playajames.flagslib.utils.IdentifierGenerator;
+import me.playajames.tdsutils.spigot.world.Locations;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
@@ -13,7 +14,7 @@ import javax.annotation.Nullable;
 
 import java.util.List;
 
-import static me.playajames.flagslib.flagslib.FlagsLib.STORAGETYPE;
+import static me.playajames.flagslib.FlagsLib.STORAGETYPE;
 
 public class FlagManager {
 
@@ -50,6 +51,17 @@ public class FlagManager {
         return false;
     }
 
+    public static boolean hasFlag(Chunk chunk, String key) { //todo here
+        if (STORAGETYPE.equals(StorageType.File)) {
+            FlagsFileDAO flagsFileDAO = new FlagsFileDAO();
+            return flagsFileDAO.has(IdentifierGenerator.generate(chunk), key);
+        } else if (STORAGETYPE.equals(StorageType.MySQL)) {
+            FlagsDBDAO flagsDBDAO = new FlagsDBDAO();
+            return flagsDBDAO.has(IdentifierGenerator.generate(chunk), key);
+        }
+        return false;
+    }
+
     public static boolean hasFlag(ItemStack item, String key) {
         NBTItem nbti = new NBTItem(item);
         return nbti.hasKey(key);
@@ -57,32 +69,40 @@ public class FlagManager {
 
     public static void setGlobalFlag(String key, @Nullable String value) {
         if (hasGlobalFlag(key)) {
-            getGlobalFlag(key).setValue(value);
+            getGlobalFlag(key).setValue(value, true);
             return;
         }
-        new GlobalFlag(key, value);
+        new GlobalFlag(key, value).save();
     }
 
     public static void setFlag(Entity entity, String key, @Nullable String value) {
         if (hasFlag(entity, key)) {
-            getFlag(entity, key).setValue(value);
+            getFlag(entity, key).setValue(value, true);
             return;
         }
-        new EntityFlag(entity, key, value);
+        new EntityFlag(entity, key, value).save();
     }
 
     public static void setFlag(Location location, String key, @Nullable String value) {
         if (hasFlag(location, key)) {
-            getFlag(location, key).setValue(value);
+            getFlag(location, key).setValue(value, true);
             return;
         }
-        new LocationFlag(location, key, value);
+        new LocationFlag(location, key, value).save();
+    }
+
+    public static void setFlag(Chunk chunk, String key, @Nullable String value) {
+        if (hasFlag(chunk, key)) {
+            getFlag(chunk, key).setValue(value, true);
+            return;
+        }
+        new ChunkFlag(chunk, key, value).save();
     }
 
     public static ItemStack setFlag(ItemStack item, String key, @Nullable String value) {
         ItemFlag flag = getFlag(item, key);
         if (flag != null) {
-            flag.setValue(value);
+            flag.setValue(value, false);
             return flag.getItem();
         }
         return new ItemFlag(item, key, value).getItem();
@@ -127,6 +147,19 @@ public class FlagManager {
         return null;
     }
 
+    public static ChunkFlag getFlag(Chunk chunk, String key) {
+        if (!hasFlag(chunk, key)) return null;
+        if (STORAGETYPE.equals(StorageType.File)) {
+            FlagsFileDAO flagsFileDAO = new FlagsFileDAO();
+            return new ChunkFlag(chunk, key, flagsFileDAO.get(IdentifierGenerator.generate(chunk), key));
+        } else if (STORAGETYPE.equals(StorageType.MySQL)) {
+            FlagsDBDAO flagsDBDAO = new FlagsDBDAO();
+            FlagsRecord record = flagsDBDAO.getOne(IdentifierGenerator.generate(chunk), key);
+            return new ChunkFlag(record.getId(), record.getIdentifier(), record.getName(), record.getValue(), FlagType.valueOf(record.getType()), record.getUpdated(), record.getCreated());
+        }
+        return null;
+    }
+
     public static ItemFlag getFlag(ItemStack item, String key) {
         if (!hasFlag(item, key)) return null;
         NBTItem nbti = new NBTItem(item);
@@ -137,8 +170,7 @@ public class FlagManager {
         if (STORAGETYPE.equals(StorageType.File)) throw new Exception("Feature not implemented yet for file storage");
 
         if (STORAGETYPE.equals(StorageType.MySQL)) {
-            FlagsDBDAO flagsDBDAO = new FlagsDBDAO();
-            //FlagsRecord[] records = flagsDBDAO.getByType(type);
+            return new FlagMapper().mapMany(new FlagsDBDAO().getAllByType(type));
         }
         return null;
     }
@@ -147,28 +179,25 @@ public class FlagManager {
         if (STORAGETYPE.equals(StorageType.File)) throw new Exception("Feature not implemented yet for file storage");
 
         if (STORAGETYPE.equals(StorageType.MySQL)) {
-            FlagsDBDAO flagsDBDAO = new FlagsDBDAO();
-            return flagsDBDAO.getByTypeWithKey(type, key);
+            return new FlagMapper().mapMany(new FlagsDBDAO().getAllByTypeWithKey(type, key));
         }
         return null;
     }
 
-    public static List<Flag> getAllFlagsByTypeWithValue(FlagType type, String key) throws Exception { //todo file storage fetch
+    public static List<Flag> getAllFlagsByTypeWithValue(FlagType type, String value) throws Exception { //todo file storage fetch
         if (STORAGETYPE.equals(StorageType.File)) throw new Exception("Feature not implemented yet for file storage");
 
         if (STORAGETYPE.equals(StorageType.MySQL)) {
-            FlagsDBDAO flagsDBDAO = new FlagsDBDAO();
-            return flagsDBDAO.getByTypeWithKey(type, key);
+            return new FlagMapper().mapMany(new FlagsDBDAO().getAllByTypeWithValue(type, value));
         }
         return null;
     }
 
-    public static List<Flag> getAllFlagsByTypeWithKeyAndValue(FlagType type, String key) throws Exception { //todo file storage fetch
+    public static List<Flag> getAllFlagsByTypeWithKeyAndValue(FlagType type, String key, String value) throws Exception { //todo file storage fetch
         if (STORAGETYPE.equals(StorageType.File)) throw new Exception("Feature not implemented yet for file storage");
 
         if (STORAGETYPE.equals(StorageType.MySQL)) {
-            FlagsDBDAO flagsDBDAO = new FlagsDBDAO();
-            return flagsDBDAO.getByTypeWithKey(type, key);
+            return new FlagMapper().mapMany(new FlagsDBDAO().getAllByTypeWithKeyAndValue(type, key, value));
         }
         return null;
     }
