@@ -1,12 +1,10 @@
-package me.playajames.flagslib.flagslib;
+package me.playajames.flagslib;
 
 import me.playajames.easydatabaseconnector.jooq.tables.records.FlagsRecord;
 
 import javax.annotation.Nullable;
 
 import java.time.LocalDateTime;
-
-import static me.playajames.flagslib.flagslib.FlagsLib.STORAGETYPE;
 
 public class Flag {
 
@@ -77,9 +75,9 @@ public class Flag {
     }
 
     public void save() {
-        if (STORAGETYPE.equals(StorageType.File))
+        if (FlagsLib.STORAGETYPE.equals(StorageType.File))
             new FlagsFileDAO().save(this.identifier, this.name, this.value, this.type);
-        else if (STORAGETYPE.equals(StorageType.MySQL)) {
+        else if (FlagsLib.STORAGETYPE.equals(StorageType.MySQL)) {
             if (this.id == -1) {
                 new FlagsDBDAO().insert(this.identifier, this.name, this.value, this.type.name());
                 updateWithDatabaseFields();
@@ -90,9 +88,9 @@ public class Flag {
 
 
     public void delete() {
-        if (STORAGETYPE.equals(StorageType.File))
+        if (FlagsLib.STORAGETYPE.equals(StorageType.File))
             new FlagsFileDAO().delete(this.identifier, this.name);
-        else if (STORAGETYPE.equals(StorageType.MySQL))
+        else if (FlagsLib.STORAGETYPE.equals(StorageType.MySQL))
             new FlagsDBDAO().delete(this.id);
     }
 

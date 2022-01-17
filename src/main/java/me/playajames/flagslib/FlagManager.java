@@ -1,12 +1,11 @@
-package me.playajames.flagslib.flagslib;
+package me.playajames.flagslib;
 
 import de.tr7zw.nbtapi.NBTItem;
 import me.playajames.easydatabaseconnector.jooq.tables.records.FlagsRecord;
-import me.playajames.flagslib.flagslib.flagtypes.EntityFlag;
-import me.playajames.flagslib.flagslib.flagtypes.GlobalFlag;
-import me.playajames.flagslib.flagslib.flagtypes.ItemFlag;
-import me.playajames.flagslib.flagslib.flagtypes.LocationFlag;
+import me.playajames.flagslib.flagtypes.*;
+import me.playajames.flagslib.utils.IdentifierGenerator;
 import me.playajames.tdsutils.spigot.world.Locations;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
@@ -15,7 +14,7 @@ import javax.annotation.Nullable;
 
 import java.util.List;
 
-import static me.playajames.flagslib.flagslib.FlagsLib.STORAGETYPE;
+import static me.playajames.flagslib.FlagsLib.STORAGETYPE;
 
 public class FlagManager {
 
@@ -52,6 +51,17 @@ public class FlagManager {
         return false;
     }
 
+    public static boolean hasFlag(Chunk chunk, String key) { //todo here
+        if (STORAGETYPE.equals(StorageType.File)) {
+            FlagsFileDAO flagsFileDAO = new FlagsFileDAO();
+            return flagsFileDAO.has(IdentifierGenerator.generate(chunk), key);
+        } else if (STORAGETYPE.equals(StorageType.MySQL)) {
+            FlagsDBDAO flagsDBDAO = new FlagsDBDAO();
+            return flagsDBDAO.has(IdentifierGenerator.generate(chunk), key);
+        }
+        return false;
+    }
+
     public static boolean hasFlag(ItemStack item, String key) {
         NBTItem nbti = new NBTItem(item);
         return nbti.hasKey(key);
@@ -79,6 +89,14 @@ public class FlagManager {
             return;
         }
         new LocationFlag(location, key, value).save();
+    }
+
+    public static void setFlag(Chunk chunk, String key, @Nullable String value) {
+        if (hasFlag(chunk, key)) {
+            getFlag(chunk, key).setValue(value, true);
+            return;
+        }
+        new ChunkFlag(chunk, key, value).save();
     }
 
     public static ItemStack setFlag(ItemStack item, String key, @Nullable String value) {
@@ -125,6 +143,19 @@ public class FlagManager {
             FlagsDBDAO flagsDBDAO = new FlagsDBDAO();
             FlagsRecord record = flagsDBDAO.getOne(Locations.serialize(location, true, false), key);
             return new LocationFlag(record.getId(), record.getIdentifier(), record.getName(), record.getValue(), FlagType.valueOf(record.getType()), record.getUpdated(), record.getCreated());
+        }
+        return null;
+    }
+
+    public static ChunkFlag getFlag(Chunk chunk, String key) {
+        if (!hasFlag(chunk, key)) return null;
+        if (STORAGETYPE.equals(StorageType.File)) {
+            FlagsFileDAO flagsFileDAO = new FlagsFileDAO();
+            return new ChunkFlag(chunk, key, flagsFileDAO.get(IdentifierGenerator.generate(chunk), key));
+        } else if (STORAGETYPE.equals(StorageType.MySQL)) {
+            FlagsDBDAO flagsDBDAO = new FlagsDBDAO();
+            FlagsRecord record = flagsDBDAO.getOne(IdentifierGenerator.generate(chunk), key);
+            return new ChunkFlag(record.getId(), record.getIdentifier(), record.getName(), record.getValue(), FlagType.valueOf(record.getType()), record.getUpdated(), record.getCreated());
         }
         return null;
     }

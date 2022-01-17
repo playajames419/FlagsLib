@@ -1,4 +1,4 @@
-package me.playajames.flagslib.flagslib;
+package me.playajames.flagslib;
 
 import de.leonhard.storage.Yaml;
 

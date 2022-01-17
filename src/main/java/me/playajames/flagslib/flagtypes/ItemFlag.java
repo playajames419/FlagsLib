@@ -1,8 +1,8 @@
-package me.playajames.flagslib.flagslib.flagtypes;
+package me.playajames.flagslib.flagtypes;
 
 import de.tr7zw.nbtapi.NBTItem;
-import me.playajames.flagslib.flagslib.Flag;
-import me.playajames.flagslib.flagslib.FlagType;
+import me.playajames.flagslib.FlagType;
+import me.playajames.flagslib.Flag;
 import org.bukkit.inventory.ItemStack;
 
 public class ItemFlag extends Flag {
