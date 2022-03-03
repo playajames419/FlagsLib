@@ -2,10 +2,7 @@ package me.playajames.flagslib;
 
 import me.playajames.easydatabaseconnector.jooq.Result;
 import me.playajames.easydatabaseconnector.jooq.tables.records.FlagsRecord;
-import me.playajames.flagslib.flagtypes.ChunkFlag;
-import me.playajames.flagslib.flagtypes.EntityFlag;
-import me.playajames.flagslib.flagtypes.GlobalFlag;
-import me.playajames.flagslib.flagtypes.LocationFlag;
+import me.playajames.flagslib.flagtypes.*;
 
 import java.util.ArrayList;
 import java.util.List;

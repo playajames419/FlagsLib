@@ -14,7 +14,7 @@
     <description>A minecraft library that makes it easy to attach persistent data to entities and locations.
     </description>
     <properties>
-        <java.version>17</java.version>
+        <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -95,28 +95,14 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.simplix-softworks</groupId>
-            <artifactId>simplixstorage</artifactId>
-            <version>3.1.9</version>
-        </dependency>
-        <dependency>
             <groupId>de.tr7zw</groupId>
             <artifactId>item-nbt-api-plugin</artifactId>
             <version>2.6.0</version>
         </dependency>
         <dependency>
-            <groupId>me.playajames</groupId>
-            <artifactId>easydatabaseconnector</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>C:\Users\James Kennedy\Dropbox\James\Workspace\EasyDatabaseConnector\target\easydatabaseconnector-1.0-SNAPSHOT.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>me.playajames</groupId>
-            <artifactId>tdsutils</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>C:\Users\James Kennedy\Dropbox\James\Workspace\TDSUtils\target\tdsutils-1.0-SNAPSHOT.jar</systemPath>
+            <groupId>com.dieselpoint</groupId>
+            <artifactId>norm</artifactId>
+            <version>0.8.5</version>
         </dependency>
     </dependencies>
 </project>
