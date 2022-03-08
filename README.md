@@ -15,7 +15,7 @@ You may shade this plugin or just add the jar to your plugins folder.
 Run your server to generate a config.yml file. Update the config with your MySQL database details and your all set.
 
 ### FlagManager
-This is how you interact with this API, access if via FlagManager static contex.
+This is how you interact with this API, access if via FlagManager static context.
 #### Methods
 In the following methods "Identifier" accepts String, Entity, Location, and Chunk.
 * `createFlag(Identifier, String, Value)` Create's a new flag returning the new flag, will return null if flag already exists.
