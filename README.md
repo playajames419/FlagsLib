@@ -8,10 +8,10 @@ A Minecraft library made for developers to make it easy and effortless to attach
 ![example-2](https://i.imgur.com/YXV55RC.png)
 ![example-3](https://i.imgur.com/E5dVVLA.png)
 
-### Setup
+## Setup
 You may shade this plugin or just add the jar to your plugins folder.
 
-## Config.yml
+### Config.yml
 Run your server to generate a config.yml file. Update the config with your MySQL database details and your all set.
 
 ### FlagManager
