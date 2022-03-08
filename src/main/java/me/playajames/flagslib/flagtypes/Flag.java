@@ -1,75 +1,58 @@
 package me.playajames.flagslib.flagtypes;
 
-import javax.annotation.Nullable;
-import javax.persistence.*;
+import org.dalesbred.annotation.DalesbredInstantiator;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static me.playajames.flagslib.FlagsLib.DAO_INSTANCE;
 
-@Table(name="flagslib-flags")
 public class Flag {
 
-    @Id
-    @GeneratedValue
-    int id;
-
-    @Column(nullable = false)
-    final String identifier;
-
-    @Column(nullable = false)
-    final String key;
-
-    @Column
+    long id;
+    String identifier;
+    String key;
     String value;
-
-    @Column(nullable = false)
-    @Enumerated
-    final FlagType type;
-
-    @Column(nullable = false)
-    boolean temp;
-
-    @Column
-    @GeneratedValue
+    FlagType type;
+    int temp;
     LocalDateTime updated;
-
-    @Column
-    @GeneratedValue
     LocalDateTime created;
 
-    public Flag(String identifier, String key, @Nullable String value, FlagType type, boolean isTemp) {
+    public Flag(String identifier, String key, String value, FlagType type, boolean isTemp) {
         this.id = -1;
         this.identifier = identifier;
         this.key = key;
         this.value = value;
         this.type = type;
-        this.temp = isTemp;
+        this.temp = (isTemp) ? 1 : 0;
+        this.updated = LocalDateTime.now();
+        this.created = LocalDateTime.now();
 
+        if (identifier == null) return;
         Flag flag = DAO_INSTANCE.insert(this);
-
         this.id = flag.getId();
-        this.updated = flag.getUpdated();
-        this.created = flag.getCreated();
     }
 
-    public Flag(int id, String identifier, String key, @Nullable String value, FlagType type, boolean isTemp, LocalDateTime updated, LocalDateTime created) {
+    @DalesbredInstantiator
+    public Flag(long id, String identifier, String key, String value, String type, boolean isTemp, String updated, String created) {
         this.id = id;
         this.identifier = identifier;
         this.key = key;
         this.value = value;
-        this.type = type;
-        this.temp = isTemp;
-        this.updated = updated;
-        this.created = created;
+        this.type = FlagType.valueOf(type);
+        this.temp = (isTemp) ? 1 : 0;
+        this.updated = LocalDateTime.parse(updated, DateTimeFormatter.ISO_DATE_TIME);
+        this.created = LocalDateTime.parse(created, DateTimeFormatter.ISO_DATE_TIME);
     }
 
-    public void save() {
+    private void save() {
+        if (identifier == null) // This ensures method will only run if flag is not stored in a database(eg. ItemFlag is non database)
+            return;
         if (this.id != -1)
             DAO_INSTANCE.update(this);
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -94,37 +77,48 @@ public class Flag {
         return type;
     }
 
-    public boolean isTemp() {
+    public int isTemp() {
         return temp;
     }
 
-    public void setTemp(boolean isTemp) {
-        this.temp = isTemp;
+    public void setTemp(int isTemp) {
+        this.temp = temp;
     }
 
     public LocalDateTime getUpdated() {
         return updated;
     }
 
+    private void setUpdated(LocalDateTime updated) {
+        this.updated = updated;
+    }
+
     public LocalDateTime getCreated() {
         return created;
     }
 
+    public void delete() {
+        DAO_INSTANCE.delete(this);
+    }
+
     @Override
-    public String toString() {
+    public String toString() { //todo update with allvariables
         return
-                this.id
-                + ", "
+                "id: "
+                + this.id
+                + ", identifier: "
                 + this.identifier
-                + ", "
+                + ", key: "
                 + this.key
-                + ", "
+                + ", value: "
                 + this.value
-                + ", "
+                + ", type: "
                 + this.type.name()
-                + ", "
+                + ", temp: "
+                + this.temp
+                + ", updated: "
                 + this.updated.toString()
-                + ", "
+                + ", created: "
                 + this.created.toString();
     }
 

@@ -8,7 +8,7 @@ import java.util.List;
 public interface DAO {
 
     Flag insert(Flag flag);
-    Flag update(Flag flag);
+    void update(Flag flag);
     void delete(Flag flag);
     boolean has(String identifier, String key);
     Flag getOne(String identifier, String key);

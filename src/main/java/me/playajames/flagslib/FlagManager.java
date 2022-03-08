@@ -1,19 +1,11 @@
 package me.playajames.flagslib;
 
-import de.tr7zw.nbtapi.NBTItem;
-<<<<<<< HEAD
-=======
-import me.playajames.flagslib.dao.FlagsDBDAO;
-import me.playajames.flagslib.dao.StorageType;
->>>>>>> rewrite
 import me.playajames.flagslib.flagtypes.*;
 import me.playajames.flagslib.utils.IdentifierGenerator;
+import me.playajames.flagslib.utils.Locations;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
-import org.bukkit.inventory.ItemStack;
-
-import javax.annotation.Nullable;
 
 import java.util.List;
 
@@ -37,91 +29,34 @@ public class FlagManager {
         return DAO_INSTANCE.has(IdentifierGenerator.generate(chunk), key);
     }
 
-    public static boolean hasFlag(ItemStack item, String key) {
-        NBTItem nbti = new NBTItem(item);
-        return nbti.hasKey(key);
-    }
-
-<<<<<<< HEAD
-    public static Flag createFlag(String identifier, String key, @Nullable String value, boolean isTemp) {
+    public static Flag createFlag(String identifier, String key, String value, boolean isTemp) {
         if (hasFlag(identifier, key))
             return null;
         return new Flag(identifier, key, value, FlagType.Generic, isTemp);
     }
 
-    public static EntityFlag createFlag(Entity entity, String key, @Nullable String value, boolean isTemp) {
+    public static EntityFlag createFlag(Entity entity, String key, String value, boolean isTemp) {
         if (hasFlag(entity, key))
             return null;
-        new EntityFlag(entity, key, value, isTemp);
-=======
-    public static void setFlag(String identifier, String key, @Nullable String value) {
-        if (hasFlag(identifier, key)) {
-            getFlag(identifier, key).setValue(value);
-            return;
-        }
-        new Flag(identifier, key, value, FlagType.Generic).save();
+        return new EntityFlag(entity, key, value, isTemp);
     }
 
-    public static void setFlag(Entity entity, String key, @Nullable String value) {
-        if (hasFlag(entity, key)) {
-            getFlag(entity, key).setValue(value);
-            return;
-        }
-        new EntityFlag(entity, key, value).save();
->>>>>>> rewrite
-    }
-
-    public static LocationFlag createFlag(Location location, String key, @Nullable String value, boolean isTemp) {
-        if (hasFlag(location, key)) {
-<<<<<<< HEAD
+    public static LocationFlag createFlag(Location location, String key, String value, boolean isTemp) {
+        if (hasFlag(location, key))
             return null;
-=======
-            getFlag(location, key).setValue(value);
-            return;
->>>>>>> rewrite
-        }
         return new LocationFlag(location, key, value, isTemp);
     }
 
-    public static ChunkFlag createFlag(Chunk chunk, String key, @Nullable String value, boolean isTemp) {
-        if (hasFlag(chunk, key)) {
-<<<<<<< HEAD
+    public static ChunkFlag createFlag(Chunk chunk, String key, String value, boolean isTemp) {
+        if (hasFlag(chunk, key))
             return null;
-=======
-            getFlag(chunk, key).setValue(value);
-            return;
->>>>>>> rewrite
-        }
         return new ChunkFlag(chunk, key, value, isTemp);
     }
 
-    public static ItemFlag createFlag(ItemStack item, String key, @Nullable String value, boolean isTemp) {
-        ItemFlag flag = getFlag(item, key);
-        if (flag != null) {
-<<<<<<< HEAD
-            return null;
-=======
-            flag.setValue(value);
-            return flag.getItem();
->>>>>>> rewrite
-        }
-        return new ItemFlag(item, key, value, isTemp);
-    }
-
     public static Flag getFlag(String identifier, String key) {
-        if (!hasFlag(identifier, key)) return null;
-<<<<<<< HEAD
+        if (!hasFlag(identifier, key))
+            return null;
         return DAO_INSTANCE.getOne(identifier, key);
-=======
-        if (STORAGETYPE.equals(StorageType.File)) {
-            FlagsFileDAO flagsFileDAO = new FlagsFileDAO();
-            return new Flag(identifier, key, flagsFileDAO.get(identifier, key), FlagType.Generic);
-        } else if (STORAGETYPE.equals(StorageType.MySQL)) {
-            FlagsDBDAO flagsDBDAO = new FlagsDBDAO();
-            return new Flag(identifier, key, /** todo fetch value */, FlagType.Generic);
-        }
-        return null;
->>>>>>> rewrite
     }
 
     public static EntityFlag getFlag(Entity entity, String key) {
@@ -137,12 +72,6 @@ public class FlagManager {
     public static ChunkFlag getFlag(Chunk chunk, String key) {
         if (!hasFlag(chunk, key)) return null;
         return (ChunkFlag) DAO_INSTANCE.getOne(IdentifierGenerator.generate(chunk), key);
-    }
-
-    public static ItemFlag getFlag(ItemStack item, String key) { //todo after ItemFlag rewrite
-        if (!hasFlag(item, key)) return null;
-        NBTItem nbti = new NBTItem(item);
-        return new ItemFlag(item, key, nbti.getString(key));
     }
 
     public static List<Flag> getAllFlagsByType(FlagType type) { //todo file storage fetch
@@ -195,38 +124,10 @@ public class FlagManager {
     }
 
     public static List<ChunkFlag> getAllFlags(Chunk chunk) {
-<<<<<<< HEAD
         List<ChunkFlag> flags = (List<ChunkFlag>) (List<?>) DAO_INSTANCE.getManyByTypeWithIdentifier(FlagType.Chunk, IdentifierGenerator.generate(chunk));
         if (flags.isEmpty())
             return null;
         return flags;
-=======
-        if (STORAGETYPE.equals(StorageType.File)) try {
-            throw new Exception("Feature not implemented yet for file storage");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        else if (STORAGETYPE.equals(StorageType.MySQL)) {
-            return new FlagMapper().mapManyChunk(new FlagsDBDAO().getAllByIdentifier(IdentifierGenerator.generate(chunk)));
-        }
-
-        return null;
-    }
-
-    public static List<Flag> getAllFlags() {
-        if (STORAGETYPE.equals(StorageType.File)) try {
-            throw new Exception("Feature not implemented yet for file storage");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        else if (STORAGETYPE.equals(StorageType.MySQL)) {
-            return new FlagMapper().mapManyGlobal(new FlagsDBDAO().getAllByIdentifier("global"));
-        }
-
-        return null;
->>>>>>> rewrite
     }
 
 }

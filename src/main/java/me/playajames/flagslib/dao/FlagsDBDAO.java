@@ -1,138 +1,142 @@
 package me.playajames.flagslib.dao;
 
-import com.dieselpoint.norm.Database;
+import com.zaxxer.hikari.HikariDataSource;
+import me.playajames.flagslib.FlagsLib;
 import me.playajames.flagslib.flagtypes.Flag;
 import me.playajames.flagslib.flagtypes.FlagType;
+import org.dalesbred.Database;
 
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.logging.Logger;
+
+import static me.playajames.flagslib.FlagsLib.STORAGETYPE;
 
 public class FlagsDBDAO implements DAO{
 
-<<<<<<< HEAD
-    private final Database db = new Database();
+    private final Database db;
+    private final String databaseTableName = "flagslib_flags";
 
     public FlagsDBDAO(String driver, String host, int port, String database, boolean useSSL, String user, String password) {
-        if (driver.equalsIgnoreCase("sqlite"))
-            db.setJdbcUrl("jdbc:" + driver + ":" + database);
-        else {
-            db.setJdbcUrl("jdbc:" + driver + "://" + host + ":" + port + "/" + database + "?useSSL=" + useSSL);
-            db.setUser(user);
-            db.setPassword(password);
+        HikariDataSource ds = new HikariDataSource();
+        ds.setJdbcUrl("jdbc:" + driver + "://" + host + ":" + port + "/" + database + "?useSSL=" + useSSL);
+        ds.setUsername(user);
+        ds.setPassword(password);
+        this.db = Database.forDataSource(ds);
+
+        if (!tableExists(databaseTableName)) {
+            Logger logger = FlagsLib.getPlugin(FlagsLib.class).getLogger();
+            logger.info("Database not found, creating...");
+            createTable();
+            logger.info("Database created!");
         }
-
-        if (!tableExists("flagslib-flags")) {
-            db.createTable(Flag.class);
-        }
-=======
-    private Database db;
-
-    public FlagsDBDAO(String driver, String host, int port, String database, boolean useSSL, String user, String password) {
-        this.db = new Database();
-        db.setJdbcUrl("jdbc:" + driver + "://" + host + ":" + port + "/" + database + "?useSSL=" + useSSL);
-        db.setUser(user);
-        db.setPassword(password);
-    }
-
-    private void createTable() {
-        if (!tableExists("flags"));
-            db.createTable(Flag.class);
->>>>>>> rewrite
     }
 
     private boolean tableExists(String tableName) {
-        DatabaseMetaData meta = null;
-        try {
-            meta = db.getConnection().getMetaData();
-            ResultSet resultSet = meta.getTables(null, null, tableName, new String[] {"TABLE"});
-            return resultSet.next();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return db.findTable("SHOW TABLES LIKE ?", databaseTableName).getRowCount() > 0;
+    }
+
+    private void createTable() {
+        if (STORAGETYPE == StorageType.MySQL)
+            db.update("CREATE TABLE `" + databaseTableName + "` (" +
+                    "  `id` bigint(20) NOT NULL AUTO_INCREMENT," +
+                    "  `identifier` varchar(255) NOT NULL," +
+                    "  `keyname` varchar(255) NOT NULL," +
+                    "  `value` varchar(255) DEFAULT NULL," +
+                    "  `type` varchar(255) NOT NULL," +
+                    "  `temp` boolean DEFAULT true NOT NULL," +
+                    "  `updated` varchar(255) NOT NULL," +
+                    "  `created` varchar(255) NOT NULL," +
+                    "  PRIMARY KEY (`id`)" +
+                    ") ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;");
     }
 
     @Override
     public Flag insert(Flag flag) {
-        return db.insert(flag).first(Flag.class);
+        if (!has(flag.getIdentifier(), flag.getKey()))
+            db.update("INSERT INTO " + databaseTableName + " (identifier, keyname, value, type, temp, updated, created) VALUES (?,?,?,?,?,?,?)",
+                    flag.getIdentifier(),
+                    flag.getKey(),
+                    flag.getValue(),
+                    flag.getType(),
+                    flag.isTemp(),
+                    flag.getUpdated().format(DateTimeFormatter.ISO_DATE_TIME),
+                    flag.getCreated().format(DateTimeFormatter.ISO_DATE_TIME));
+        return getOne(flag.getIdentifier(), flag.getKey());
     }
 
     @Override
-    public Flag update(Flag flag) {
-        return db.update(flag).first(Flag.class);
+    public void update(Flag flag) {
+        db.updateUnique("UPDATE " + databaseTableName + " SET value=?, temp=?, updated=? WHERE id=?", flag.getValue(), flag.isTemp(), LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), flag.getId());
     }
 
     @Override
     public void delete(Flag flag) {
-        db.delete(flag);
+        db.updateUnique("DELETE FROM " + databaseTableName + " WHERE id=?", flag.getId());
     }
 
     @Override
     public boolean has(String identifier, String key) {
-        return !db.where("identifier=?, key=?", identifier, key).results(Flag.class).isEmpty();
+        return !db.findAll(Flag.class,"SELECT * FROM " + databaseTableName + " WHERE identifier=? AND keyname=?", identifier, key).isEmpty();
     }
-
 
     @Override
     public Flag getOne(String identifier, String key) {
-        List<Flag> results= db.where("identifier=?, key=?", identifier, key).results(Flag.class);
-        return (results.isEmpty()) ? null : results.get(0);
+        return db.findUnique(Flag.class, "SELECT * FROM " + databaseTableName + " WHERE identifier=? AND keyname=?", identifier, key);
     }
 
     @Override
     public List<Flag> getManyWithKey(String key) {
-        List<Flag> results = db.where("key=?", key).results(Flag.class);
+        List<Flag> results = db.findAll(Flag.class, "SELECT * FROM " + databaseTableName + " WHERE keyname=?", key);
         return (results.isEmpty()) ? null : results;
     }
 
     @Override
     public List<Flag> getManyWithValue(String value) {
-        List<Flag> results = db.where("value=?", value).results(Flag.class);
+        List<Flag> results = db.findAll(Flag.class, "SELECT * FROM " + databaseTableName + " WHERE value=?", value);
         return (results.isEmpty()) ? null : results;
     }
 
     @Override
     public List<Flag> getManyWithKeyAndValue(String key, String value) {
-        List<Flag> results = db.where("key=?, value=?", key, value).results(Flag.class);
+        List<Flag> results = db.findAll(Flag.class, "SELECT * FROM " + databaseTableName + " WHERE keyname=? AND value=?", key, value);
         return (results.isEmpty()) ? null : results;
     }
 
-
     @Override
     public List<Flag> getManyByType(FlagType type) {
-        List<Flag> results = db.where("flagtype=?", type).results(Flag.class);
+        List<Flag> results = db.findAll(Flag.class, "SELECT * FROM " + databaseTableName + " WHERE type=?", type.name());
         return (results.isEmpty()) ? null : results;
     }
 
     @Override
     public List<Flag> getManyByTypeWithKey(FlagType type, String key) {
-        List<Flag> results = db.where("flagtype=?, key=?", type, key).results(Flag.class);
+        List<Flag> results = db.findAll(Flag.class, "SELECT * FROM " + databaseTableName + " WHERE type=? AND keyname=?", type.name(), key);
         return (results.isEmpty()) ? null : results;
     }
 
     @Override
     public List<Flag> getManyByTypeWithValue(FlagType type, String value) {
-        List<Flag> results = db.where("flagtype=?, value=?", type, value).results(Flag.class);
+        List<Flag> results = db.findAll(Flag.class, "SELECT * FROM " + databaseTableName + " WHERE type=? AND value=?", type.name(), value);
         return (results.isEmpty()) ? null : results;
     }
 
     @Override
     public List<Flag> getManyByTypeWithKeyAndValue(FlagType type, String key, String value) {
-        List<Flag> results = db.where("flagtype=?, key=?, value=?", type, key, value).results(Flag.class);
+        List<Flag> results = db.findAll(Flag.class, "SELECT * FROM " + databaseTableName + " WHERE type=? AND keyname=? AND value=?", type.name(), key, value);
         return (results.isEmpty()) ? null : results;
     }
 
     @Override
     public List<Flag> getManyByTypeWithIdentifier(FlagType type, String identifier) {
-        List<Flag> results = db.where("flagtype=?, identifier=?", type, identifier).results(Flag.class);
+        List<Flag> results = db.findAll(Flag.class, "SELECT * FROM " + databaseTableName + " WHERE type=? AND identifier=?", type.name(), identifier);
         return (results.isEmpty()) ? null : results;
     }
 
     @Override
     public List<Flag> getManyByIdentifier(String identifier) {
-        List<Flag> results = db.where("identifier=?", identifier).results(Flag.class);
+        List<Flag> results = db.findAll(Flag.class, "SELECT * FROM " + databaseTableName + " WHERE identifier=?", identifier);
         return (results.isEmpty()) ? null : results;
     }
 

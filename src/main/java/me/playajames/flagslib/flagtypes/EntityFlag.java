@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 
 import javax.annotation.Nullable;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class EntityFlag extends Flag {
@@ -16,8 +15,8 @@ public class EntityFlag extends Flag {
         this.entity = entity;
     }
 
-    public EntityFlag(int id, String identifier, String key, @Nullable String value, FlagType type, boolean isTemp, LocalDateTime updated, LocalDateTime created) {
-        super(id, identifier, key, value, type, isTemp updated, created);
+    public EntityFlag(int id, String identifier, String key, @Nullable String value, String type, boolean isTemp, String updated, String created) {
+        super(id, identifier, key, value, type, isTemp, updated, created);
         entity = Bukkit.getEntity(UUID.fromString(identifier)); //todo dont think this will this work if entity is offline or not loaded? may just need to return null entity, but still allow modification of the flag
     }
 
