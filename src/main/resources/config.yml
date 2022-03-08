@@ -1,2 +1,12 @@
-# Storage type may be file or mysql
-storage-type: file
+# Storage type may only be mysql, more options may be implemented in the future
+storage-type: mysql
+
+# SQL Settings
+sql:
+  driver: mysql # Do not change this unless you know what your doing, other drivers have not been tested.
+  host: localhost # Hostname of your database
+  port: 3306 # Port of your database
+  database: database-name # Name of your database
+  use-ssl: false # Whether to use ssl connection
+  user: database-user # User with access to your database
+  password: super-strong-password # Password for specified user above

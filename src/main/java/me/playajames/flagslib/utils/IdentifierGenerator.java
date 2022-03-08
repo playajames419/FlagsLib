@@ -7,4 +7,5 @@ public class IdentifierGenerator {
     public static String generate(Chunk chunk) {
         return chunk.getWorld().getUID() + ":" + chunk.getChunkKey();
     }
+
 }

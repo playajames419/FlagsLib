@@ -111,3 +111,7 @@ buildNumber.properties
 
 # Common working directory
 run/
+
+.mvn/extensions.xml
+
+dev_server/
