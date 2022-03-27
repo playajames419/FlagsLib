@@ -14,7 +14,7 @@ public class Flag {
     String key;
     String value;
     FlagType type;
-    int temp;
+    boolean temp;
     LocalDateTime updated;
     LocalDateTime created;
 
@@ -24,7 +24,7 @@ public class Flag {
         this.key = key;
         this.value = value;
         this.type = type;
-        this.temp = (isTemp) ? 1 : 0;
+        this.temp = isTemp;
         this.updated = LocalDateTime.now();
         this.created = LocalDateTime.now();
 
@@ -40,7 +40,7 @@ public class Flag {
         this.key = key;
         this.value = value;
         this.type = FlagType.valueOf(type);
-        this.temp = (isTemp) ? 1 : 0;
+        this.temp = isTemp;
         this.updated = LocalDateTime.parse(updated, DateTimeFormatter.ISO_DATE_TIME);
         this.created = LocalDateTime.parse(created, DateTimeFormatter.ISO_DATE_TIME);
     }
@@ -77,7 +77,7 @@ public class Flag {
         return type;
     }
 
-    public int isTemp() {
+    public boolean isTemp() {
         return temp;
     }
 

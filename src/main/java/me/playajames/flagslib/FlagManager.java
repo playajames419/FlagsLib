@@ -7,6 +7,9 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 
+import javax.annotation.Nullable;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static me.playajames.flagslib.FlagsLib.DAO_INSTANCE;
@@ -61,17 +64,20 @@ public class FlagManager {
 
     public static EntityFlag getFlag(Entity entity, String key) {
         if (!hasFlag(entity, key)) return null;
-        return (EntityFlag) DAO_INSTANCE.getOne(entity.getUniqueId().toString(), key);
+        Flag flag = DAO_INSTANCE.getOne(entity.getUniqueId().toString(), key);
+        return new EntityFlag(flag);
     }
 
     public static LocationFlag getFlag(Location location, String key) {
         if (!hasFlag(location, key)) return null;
-        return (LocationFlag) DAO_INSTANCE.getOne(Locations.serialize(location, true, false), key);
+        Flag flag = DAO_INSTANCE.getOne(Locations.serialize(location, true, false), key);
+        return new LocationFlag(flag);
     }
 
     public static ChunkFlag getFlag(Chunk chunk, String key) {
         if (!hasFlag(chunk, key)) return null;
-        return (ChunkFlag) DAO_INSTANCE.getOne(IdentifierGenerator.generate(chunk), key);
+        Flag flag = DAO_INSTANCE.getOne(IdentifierGenerator.generate(chunk), key);
+        return new ChunkFlag(flag);
     }
 
     public static List<Flag> getAllFlagsByType(FlagType type) { //todo file storage fetch
