@@ -108,8 +108,8 @@
 
     <distributionManagement>
         <repository>
-            <id>tds-repository-snapshots</id>
-            <url>https://maven.tdsmc.com/snapshots</url>
+            <id>tdsmc-repo-public</id>
+            <url>http://maven.tdsmc.com:8080/public</url>
         </repository>
     </distributionManagement>
 </project>
