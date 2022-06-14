@@ -44,9 +44,9 @@ In the following methods "Identifier" accepts String, Entity, Location, and Chun
 #### Repository
 ```
 <repository>
-  <id>tds-repository-snapshots</id>
-  <name>TDSMC Maven</name>
-  <url>https://maven.tdsmc.com/snapshots</url>
+  <id>tdsmc-repo-public</id>
+  <name>TDSMC Repository</name>
+  <url>http://maven.tdsmc.com:8080/public</url>
 </repository>
 ```
 
@@ -55,7 +55,7 @@ In the following methods "Identifier" accepts String, Entity, Location, and Chun
 <dependency>
   <groupId>me.playajames.flags-lib</groupId>
   <artifactId>flags-lib</artifactId>
-  <version>1.0.0-dev-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
 </dependency>
 ```
 
