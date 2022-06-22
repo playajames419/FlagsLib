@@ -3,4 +3,6 @@ version: ${project.version}
 main: me.playajames.flagslib.FlagsLib
 api-version: 1.18
 authors: [ Playajames ]
+softdepend:
+  - WorldGuard
 description: A Minecraft library made for developers to make it easy and effortless to attach persistent data to entities, locations, chunks, worlds, items, and more.

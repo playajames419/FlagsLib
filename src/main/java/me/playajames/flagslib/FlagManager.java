@@ -1,15 +1,14 @@
 package me.playajames.flagslib;
 
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import me.playajames.flagslib.flagtypes.*;
 import me.playajames.flagslib.utils.IdentifierGenerator;
 import me.playajames.flagslib.utils.Locations;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 
-import javax.annotation.Nullable;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static me.playajames.flagslib.FlagsLib.DAO_INSTANCE;
@@ -30,6 +29,10 @@ public class FlagManager {
 
     public static boolean hasFlag(Chunk chunk, String key) { //todo here
         return DAO_INSTANCE.has(IdentifierGenerator.generate(chunk), key);
+    }
+
+    public static boolean hasFlag(World world, ProtectedRegion region, String key) {
+        return DAO_INSTANCE.has(IdentifierGenerator.generate(world, region), key);
     }
 
     public static Flag createFlag(String identifier, String key, String value, boolean isTemp) {
@@ -56,6 +59,12 @@ public class FlagManager {
         return new ChunkFlag(chunk, key, value, isTemp);
     }
 
+    public static RegionFlag createFlag(World world, ProtectedRegion region, String key, String value, boolean isTemp) {
+        if (hasFlag(world, region, key))
+            return null;
+        return new RegionFlag(world, region, key, value, isTemp);
+    }
+
     public static Flag getFlag(String identifier, String key) {
         if (!hasFlag(identifier, key))
             return null;
@@ -78,6 +87,12 @@ public class FlagManager {
         if (!hasFlag(chunk, key)) return null;
         Flag flag = DAO_INSTANCE.getOne(IdentifierGenerator.generate(chunk), key);
         return new ChunkFlag(flag);
+    }
+
+    public static RegionFlag getFlag(World world, ProtectedRegion region, String key) {
+        if (!hasFlag(world, region, key)) return null;
+        Flag flag = DAO_INSTANCE.getOne(IdentifierGenerator.generate(world, region), key);
+        return new RegionFlag(flag);
     }
 
     public static List<Flag> getAllFlagsByType(FlagType type) { //todo file storage fetch
@@ -131,6 +146,13 @@ public class FlagManager {
 
     public static List<ChunkFlag> getAllFlags(Chunk chunk) {
         List<ChunkFlag> flags = (List<ChunkFlag>) (List<?>) DAO_INSTANCE.getManyByTypeWithIdentifier(FlagType.Chunk, IdentifierGenerator.generate(chunk));
+        if (flags.isEmpty())
+            return null;
+        return flags;
+    }
+
+    public static List<RegionFlag> getAllFlags(World world, ProtectedRegion region) {
+        List<RegionFlag> flags = (List<RegionFlag>) (List<?>) DAO_INSTANCE.getManyByTypeWithIdentifier(FlagType.Region, IdentifierGenerator.generate(world, region));
         if (flags.isEmpty())
             return null;
         return flags;
